@@ -12,46 +12,7 @@
               placeholder="Find your note"
               @search="search = $event"
             />
-            <div class="icons">
-              <svg
-                :class="{ active: grid }"
-                @click="grid = true"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <rect x="3" y="3" width="7" height="7"></rect>
-                <rect x="14" y="3" width="7" height="7"></rect>
-                <rect x="14" y="14" width="7" height="7"></rect>
-                <rect x="3" y="14" width="7" height="7"></rect>
-              </svg>
-              <svg
-                :class="{ active: !grid }"
-                @click="grid = false"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <line x1="8" y1="6" x2="21" y2="6"></line>
-                <line x1="8" y1="12" x2="21" y2="12"></line>
-                <line x1="8" y1="18" x2="21" y2="18"></line>
-                <line x1="3" y1="6" x2="3" y2="6"></line>
-                <line x1="3" y1="12" x2="3" y2="12"></line>
-                <line x1="3" y1="18" x2="3" y2="18"></line>
-              </svg>
-            </div>
+          <iconsGrid :grid="grid" @gridToogle="handleGridToogle" />
           </div>
           <notesList
             :notes="notesFilter"
@@ -72,6 +33,7 @@ import errorMessage from "@/components/errorMessage.vue";
 import notesList from "@/components/NotesList.vue";
 import newNote from "@/components/NewNote.vue";
 import search from "@/components/Search.vue";
+import iconsGrid from './components/iconsGrid.vue';
 
 export default {
   components: {
@@ -79,6 +41,7 @@ export default {
     notesList,
     newNote,
     search,
+    iconsGrid
   },
   data() {
     return {
@@ -89,9 +52,14 @@ export default {
       note: {
         title: "",
         description: "",
-        priority: "ordinary",
         disabled: true,
         error: "",
+        priorities: [
+          { alias: "easy", title: "Simple" },
+          { alias: "medium", title: "Hard" },
+          { alias: "hard", title: "Extra hard" },
+        ],
+        selected: "easy",
       },
       notes: [
         {
@@ -99,27 +67,27 @@ export default {
           description: "Description for first note",
           date: new Date(Date.now()).toLocaleString(),
           id: Math.random() + " First Note",
-          priority: "ordinary",
           disabled: true,
           error: "",
+          selected: "easy",
         },
         {
           title: "Second Note",
           description: "Description for second note",
           date: new Date(Date.now()).toLocaleString(),
           id: Math.random() + " Second Note",
-          priority: "ordinary",
           disabled: true,
           error: "",
+          selected: "easy",
         },
         {
           title: "Third Note",
           description: "Description for third note",
           date: new Date(Date.now()).toLocaleString(),
           id: Math.random() + " Third Note",
-          priority: "ordinary",
           disabled: true,
           error: "",
+          selected: "easy",
         },
       ],
     };
@@ -146,13 +114,13 @@ export default {
         ...this.note,
         date: new Date(Date.now()).toLocaleString(),
         id: Math.random() + " " + this.note.title,
-        error: ''
+        error: "",
       });
       this.errorMessage = null;
       this.note.title = "";
       this.note.description = "";
-      this.note.priority = "ordinary";
       this.note.disabled = true;
+      this.note.selected = "easy";
     },
     removeNote(i) {
       let searchNote = this.notes.find((note) => note.id === i);
@@ -193,6 +161,9 @@ export default {
         return note;
       });
     },
+    handleGridToogle(grid) {
+      this.grid = !grid;
+      }
   },
 };
 </script>
